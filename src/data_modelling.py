@@ -3,29 +3,41 @@ import scipy.stats as stats
 
 
 class MultivariateGaussian:
+    """
+        Class for fitting a multivariate gaussian distribution to
+        a nxd array where n = the number of samples and d is the number of
+        random variables or parameters.
+    """
     def __init__(self):
         self.mu_ = None
-        self.cov_ = None
+        self.covmat_ = None
 
     def fit(self, x):
+        """
+            Fits the mean and covariance matrix for given input data x
+            to attributes mu_ and covmat_ respectively.
+        """
         self.mu_ = x.mean(0)
-        self.cov_ = np.dot((x - self.mu_).T, (x - self.mu_)) / x.shape[0]
+        self.covmat_ = np.dot((x - self.mu_).T, (x - self.mu_)) / x.shape[0]
 
     def pdf(self, x):
+        """
+          Generates the probability of a given x vector based on the
+          probability distribution function N(mu_, covmat_)
+
+          Returns: the probability
+        """
         k = self.mu_.shape[0]  # number of dimensions
-        inv_cov = np.linalg.inv(self.cov_)  # inverse of the covariance matrix
         diff = x - self.mu_  # deviation of x from the mean
 
-        term1 = (2*np.pi)**(-k/2)
-        term2 = np.linalg.det(inv_cov)
-        term3 = np.exp(-0.5*np.sum(np.dot(diff.T, np.dot(inv_cov, diff)), axis=0))
-
-        return term1*term2*term3
+        term1 = 1. / (np.sqrt(2 * np.pi) ** k * np.linalg.det(self.covmat_))
+        term2 = np.exp(-(np.linalg.solve(self.covmat_, diff.T).dot(diff)) / 2)
+        return term1 * term2
 
     def log_likelihood(self, x):
         k = self.mu_.shape[0]  # number of dimensions
         n = x.shape[1]  # number of samples
-        inv_cov = np.linalg.inv(self.cov_)  # inverse of the covariance matrix
+        inv_cov = np.linalg.inv(self.covmat_)  # inverse of the covariance matrix
         diff = x - self.mu_  # deviation of x from the mean
         maha_dist = np.sum(np.tensordot(diff.T, np.dot(inv_cov, diff), 1))
 
