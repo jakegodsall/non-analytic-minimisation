@@ -34,6 +34,20 @@ class MultivariateGaussian:
         term2 = np.exp(-(np.linalg.solve(self.covmat_, diff.T).dot(diff)) / 2)
         return term1 * term2
 
+    def probability_from_mesh(self, xx, yy):
+        """
+            Generate an array of probability values from a given meshgrid
+            of xx and yy
+            Note: xx and yy must be the same shape.
+        """
+        pdf_values = np.zeros((xx.shape[0], yy.shape[0]))
+
+        for i in range(xx.shape[0]):
+            for j in range(xx.shape[1]):
+                pdf_values[i][j] = mg.pdf([xx[i][j], yy[i][j]])
+
+        return pdf_values
+
     def log_likelihood(self, x):
         k = self.mu_.shape[0]  # number of dimensions
         n = x.shape[1]  # number of samples
