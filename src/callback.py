@@ -20,15 +20,17 @@ class Simulator:
             Pass to the optimiser as the objective function.
         """
         result = self.objective(x, *args)  # evaluate the objective function
+        x = x[0] if len(x) == 1 else list(x)
+
         if not self.call_count:  # first call is stored in all lists
-            self.decreasing_list_calls_inp.append(x[0])
+            self.decreasing_list_calls_inp.append(x)
             self.decreasing_list_calls_res.append(result)
             self.list_callback_inp.append(x)
             self.list_callback_res.append(result)
         elif result < self.decreasing_list_calls_res[-1]:
-            self.decreasing_list_calls_inp.append(x[0])
+            self.decreasing_list_calls_inp.append(x)
             self.decreasing_list_calls_res.append(result)
-        self.list_calls_inp.append(x[0])
+        self.list_calls_inp.append(x)
         self.list_calls_res.append(result)
         self.call_count += 1
         return result
@@ -58,6 +60,19 @@ class Simulator:
         print(s1)
         self.callback_count += 1
 
-    def create_dataframe(self):
-        results = 
+    def to_dataframe(self):
+        data = {}
 
+        params = np.array(self.decreasing_list_calls_inp).T
+
+        if params.ndim == 1:
+            data["parameter"] = params
+        else:
+            for idx, i in enumerate(params):
+                data[f"parameter {idx + 1}"] = i
+        data["likelihood"] = self.decreasing_list_calls_res
+
+        df = pd.DataFrame(data)
+        df["iteration"] = df.index + 1
+
+        return df
