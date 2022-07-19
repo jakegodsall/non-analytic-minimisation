@@ -1,6 +1,10 @@
 import inspect
 import datetime
 
+import json
+
+from pathlib import Path
+
 
 class OutputGenerator:
     def __init__(self, model, callback):
@@ -25,3 +29,14 @@ class OutputGenerator:
             },
             "results": self.results
         }
+
+
+class Saver:
+    def __init__(self, save_path):
+        self.save_path = Path(".") / save_path
+
+    def save(self, results, file_name):
+        self.save_path.mkdir(exist_ok=True)
+        with open(file_name, "w", encoding='utf-8') as json_file:
+            json.dump(results, json_file, ensure_ascii=False,
+                      indent=4)
