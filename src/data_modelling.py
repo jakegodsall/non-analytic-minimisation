@@ -1,5 +1,69 @@
 import numpy as np
 
+from scipy.optimize import minimize
+from callback import Simulator
+
+
+class TestObject:
+    def __init__(self):
+        # random number generation hyperparameters
+        self.random_state = None
+        self.mu = None
+        self.variance = None
+        self.sample_size = None
+        # optimisation hyperparameters
+        self.model = None
+        self.initial_guess = None
+        self.method = None
+        self.tolerance = None
+
+    def generate_random_sample(self,
+                               random_state,
+                               mu,
+                               variance,
+                               sample_size):
+        # set object variables
+        self.random_state = random_state
+        self.mu = mu
+        self.variance = variance
+        self.sample_size = sample_size
+
+        # set the random seed
+        rng = np.random.default_rng(random_state)
+
+        # generate a random sample using the numpy function
+        sample = rng.normal(mu, variance, sample_size)
+
+        return sample
+
+    # define the uni-variate Gaussian likelihood function
+    def likelihood(self, params, x):
+        print(params)
+        mu = self.model(params, x)
+        print(mu)
+        var = self.variance
+        n = len(x)
+        L = (n / 2) * np.log(2 * np.pi) + (n / 2) * np.log(var) + (1 / (2 * var)) * sum((x - mu) ** 2)
+        return L
+
+    def minimise(self, x, initial_guess, method, tolerance=1e-6):
+        self.initial_guess = initial_guess
+        self.method = method
+        self.tolerance = tolerance
+
+        # instantiate the simulator class
+        lik_sim = Simulator(self.likelihood)
+
+        # minimise the -log(L) function using the wrapper class Simulator
+        lik_model = minimize(lik_sim.simulate,
+                             x0=initial_guess,
+                             args=(x),
+                             method=method,
+                             tol=tolerance,
+                             options={"disp": True})
+
+        return lik_model
+
 
 class MultivariateGaussian:
     """
