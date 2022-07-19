@@ -3,7 +3,7 @@
 This repository contains all the code for a project involving the comparison
 of non-analytic minimisation methods.
 
-The project structure is as follows
+The project is structured as follows:
 
 ```bash
 ├── non-analytic-minimisation
