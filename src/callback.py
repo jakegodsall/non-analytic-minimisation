@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 class Simulator:
     def __init__(self, objective):
         self.objective = objective  # define objective function
@@ -19,10 +20,13 @@ class Simulator:
             Returns the result and updates the lists for the callback.
             Pass to the optimiser as the objective function.
         """
-        result = self.objective(x, *args)  # evaluate the objective function
+        # evaluate the objective function
+        result = self.objective(x, *args)
+        # pull the value out of the 1-element numpy array if there is only a single parameter
         x = x[0] if len(x) == 1 else list(x)
 
-        if not self.call_count:  # first call is stored in all lists
+        # first call of the simulate function is applied to total list and decreasing list
+        if not self.call_count:
             self.decreasing_list_calls_inp.append(x)
             self.decreasing_list_calls_res.append(result)
             self.list_callback_inp.append(x)
@@ -48,7 +52,7 @@ class Simulator:
         s1 += f"{self.list_calls_res[i]:10.5e}"
 
         self.list_callback_inp.append(xk)
-        self.list_callback_res.append(self.list_calls_res[i])
+        self.list_callback_res.append(self.list_callss_res[i])
 
         if not self.callback_count:
             s0 = ""
