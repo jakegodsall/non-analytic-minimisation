@@ -29,15 +29,15 @@ a distribution can be sampled using `TestObject.generate_random_sample()`.
 3. Minimise the -log likelihood `TestObject.likelihood()` using 
 `TestObject.minimise()`. 
 
-4. The `TestObject.minimise()` function instantiates a wrapper class 
-`callback.Simulator` around the likelihood function to return results for
-the entire minimisation process, rather than just the final result.
+   - The `TestObject.minimise()` function instantiates a wrapper class 
+   `callback.Simulator` around the likelihood function to return results for
+   the entire minimisation process, rather than just the final result.
 
-5. Call `Simulator.to_dataframe()` to return a dataframe of the output of the
+4. Call `Simulator.to_dataframe()` to return a dataframe of the output of the
 minimisation.
 
-6. Instantiate the `output.OutputGenerator` and call 
+5. Instantiate the `output.OutputGenerator` and call 
 `OutputGenerator.return_json()` to get a JSON object of all results.
 
-7. Instantiate `output.Saver` and call `Saver.save()` to save the JSON to
+6. Instantiate `output.Saver` and call `Saver.save()` to save the JSON to
 disk.
