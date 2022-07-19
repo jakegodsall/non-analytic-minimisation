@@ -37,6 +37,6 @@ class Saver:
 
     def save(self, results, file_name):
         self.save_path.mkdir(exist_ok=True)
-        with open(file_name, "w", encoding='utf-8') as json_file:
+        with open(self.save_path / file_name, "w", encoding='utf-8') as json_file:
             json.dump(results, json_file, ensure_ascii=False,
                       indent=4)
