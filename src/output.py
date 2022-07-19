@@ -4,7 +4,7 @@ import datetime
 
 class OutputGenerator:
     def __init__(self, model, callback):
-        self.date = datetime.datetime.today().strftime("%H:%M:%S %d/%m/$Y")
+        self.date = datetime.datetime.today().strftime("%H:%M:%S %d/%m/%Y")
         self.objective_function = self.get_objective(model)
         self.number_of_iterations = callback.shape[0]
         self.results = callback.drop("iteration", axis=1).to_json()
