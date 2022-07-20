@@ -36,7 +36,10 @@ class Model:
 
     def plot(self, x, xlims=(-10, 10), ylims=(-10, 10), step=.1):
 
-        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(20, 10))
+        fig = plt.Figure(figsize=(20, 10))
+
+        ax1 = fig.add_subplot(121)
+        ax2 = fig.add_subplot(122)
 
         xx, yy = np.meshgrid(np.arange(*xlims, step), np.arange(*ylims, step))
 
