@@ -31,19 +31,16 @@ class Model:
         mu = self.model_fn(params, x)
         sigma = 2
         n = len(x)
-        L = (n / 2) * np.log(2 * np.pi) + (n / 2) * np.log(sigma ** 2) + (1 / (2 * sigma ** 2)) * sum((x - mu) ** 2)
-        return L
+        likelihood = (n / 2) * np.log(2 * np.pi) + (n / 2) * np.log(sigma ** 2) + (1 / (2 * sigma ** 2)) * sum((x - mu) ** 2)
+        return likelihood
 
     def plot(self, x, xlims=(-10, 10), ylims=(-10, 10), step=.1):
 
-        fig = plt.Figure(figsize=(20, 10))
+        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(20, 10))
 
-        ax1 = fig.add_subplot(121)
-        ax2 = fig.add_subplot(122)
+        aa, bb = np.meshgrid(np.arange(*xlims, step), np.arange(*ylims, step))
 
-        xx, yy = np.meshgrid(np.arange(*xlims, step), np.arange(*ylims, step))
-
-        values = np.array((xx, yy)).T.reshape(-1, 2)
+        values = np.array((aa, bb)).T.reshape(-1, 2)
 
         # FUNCTION PLOT
 
@@ -52,7 +49,7 @@ class Model:
         for idx, val in enumerate(values):
             function_values[idx] = self.model_fn(val, x)
 
-        contours = ax1.contour(xx, yy, function_values.reshape(xx.shape), 10)
+        contours = ax1.contour(aa, bb, function_values.reshape(aa.shape), 10)
         ax1.clabel(contours, inline=1, fontsize=12)
         ax1.set_ylabel("y", fontsize=25)
         ax1.set_xlabel("x", fontsize=25)
@@ -65,7 +62,7 @@ class Model:
         for idx, val in enumerate(values):
             likelihood_values[idx] = self.likelihood(val, x)
 
-        contours = ax2.contour(xx, yy, likelihood_values.reshape(xx.shape), 10)
+        contours = ax2.contour(aa, bb, likelihood_values.reshape(aa.shape), 10)
         ax2.clabel(contours, inline=1, fontsize=12)
         ax2.set_ylabel("y", fontsize=25)
         ax2.set_xlabel("x", fontsize=25)
