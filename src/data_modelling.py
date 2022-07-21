@@ -1,7 +1,7 @@
 import numpy as np
 
 from scipy.optimize import minimize
-from callback import Simulator
+from src.callback import Simulator
 
 
 class TestObject:
@@ -37,14 +37,24 @@ class TestObject:
         return sample
 
     # define the uni-variate Gaussian likelihood function
-    def likelihood(self, params, x):
-        print(params)
+    def univariate_likelihood(self, params, x):
         mu = self.model(params, x)
-        print(mu)
-        var = self.variance
-        n = len(x)
-        L = (n / 2) * np.log(2 * np.pi) + (n / 2) * np.log(var) + (1 / (2 * var)) * sum((x - mu) ** 2)
-        return L
+        likelihood = sum((x - mu) ** 2)
+        return likelihood
+
+    def multivariate_likelihood(self, params, x):
+        mu = params
+        covmat = self.variance
+
+        x = x[:, np.newaxis]
+        k = mu.shape[0]
+        n = x.shape[1]
+        inv_covmat = np.linalg.inv(covmat)
+        diff = x - mu
+        maha_dist = np.einsum('ijk, kl, ijl->ij', diff, inv_covmat, diff)
+        return maha_dist
+
+
 
     def minimise(self, x, initial_guess, method, tolerance=1e-6):
         self.initial_guess = initial_guess
