@@ -89,8 +89,8 @@ class MultivariateTestObject:
                                sample_size):
         # set object variables
         self.random_state = random_state
-        self.mu = mu
-        self.variance = variance
+        self.mu = np.array(mu)
+        self.variance = np.array(variance)
         self.sample_size = sample_size
 
         # set the random seed
